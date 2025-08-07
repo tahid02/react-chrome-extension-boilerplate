@@ -1,6 +1,6 @@
 # chrome extension template
 
-### mv3 || React 18 || Tailwind 4 || Typescript 4 || Webpack 5
+### mv3 || React 19 || Tailwind 4 || Typescript 4 || Webpack 5
 
 ## Getting Started
 

@@ -14,5 +14,10 @@ const App: React.FC<{}> = () => {
 const container = document.createElement('div');
 document.body.appendChild(container);
 
-const root = createRoot(container);
+const root = createRoot(container, {
+  identifierPrefix: 'sidepanel-',
+  onRecoverableError: (error) => {
+    console.error('[Sidepanel] Recoverable error:', error);
+  },
+});
 root.render(<App />);

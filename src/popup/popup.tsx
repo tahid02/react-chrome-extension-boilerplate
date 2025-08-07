@@ -14,5 +14,11 @@ const App: React.FC<{}> = () => {
 const container = document.createElement('div');
 document.body.appendChild(container);
 
-const root = createRoot(container);
+const root = createRoot(container, {
+  identifierPrefix: 'popup-',
+  onRecoverableError: (error) => {
+    console.error('[Popup] Recoverable error:', error);
+  },
+});
+
 root.render(<App />);
