@@ -1,4 +1,4 @@
-# Dealmatch chrome extension
+# chrome extension template
 
 ### mv3 || React || Tailwind || Typescript || Webpack
 
