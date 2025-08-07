@@ -6,8 +6,7 @@ import './popup.css';
 const App: React.FC<{}> = () => {
   return (
     <div>
-      <img src="icon.png" className="w-10 h-10 mx-auto mt-10 mb-10" />
-      <h1 className="text-2xl font-bold text-center">Dealmatch</h1>
+      <img src="icon.png" className="w-[300px] h-[300px] mx-auto mt-10 mb-10" />
     </div>
   );
 };
