@@ -1,0 +1,8 @@
+body {
+  background-color: #fff;
+  width: 780px;
+  height: 600px;
+}
+* {
+  box-sizing: border-box;
+}
