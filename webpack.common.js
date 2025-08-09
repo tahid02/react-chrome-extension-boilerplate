@@ -2,6 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
@@ -11,6 +12,7 @@ module.exports = {
     sidePanel: path.resolve('src/sidePanel/sidePanel.tsx'),
     contentScript: path.resolve('src/contentScript/contentScript.ts'),
     main: path.resolve('src/contentScript/main.tsx'),
+    tailwind: path.resolve('src/tailwind.css'),
   },
   module: {
     rules: [
@@ -21,7 +23,12 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [
+          // Use MiniCssExtractPlugin for extracting CSS to files
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+        ],
       },
       {
         test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
@@ -44,6 +51,10 @@ module.exports = {
         },
       ],
     }),
+    // Extract CSS to separate files
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
     ...getHtmlPlugins(['popup', 'options', 'sidePanel']),
   ],
   output: {
@@ -56,7 +67,9 @@ module.exports = {
         return (
           chunk.name !== 'contentScript' &&
           chunk.name !== 'background' &&
-          chunk.name !== 'content'
+          chunk.name !== 'content' &&
+          chunk.name !== 'main' &&
+          chunk.name !== 'tailwind'
         );
       },
     },
