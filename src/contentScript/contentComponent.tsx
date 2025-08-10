@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Login from './login';
 
 const ContentComponent: React.FC = () => {
   useEffect(() => {
@@ -13,11 +12,7 @@ const ContentComponent: React.FC = () => {
     });
   }, []);
 
-  return (
-    <div>
-      <Login />
-    </div>
-  );
+  return <div>Your component here</div>;
 };
 
 export default ContentComponent;
