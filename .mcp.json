@@ -6,7 +6,6 @@
       "args": [
         "chrome-devtools-mcp@latest",
         "--categoryExtensions",
-        "--autoConnect",
         "--userDataDir",
         "./.chrome-mcp-profile",
         "--loadExtension",
