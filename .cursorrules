@@ -1,0 +1,113 @@
+# Cursor Rules for React Chrome Extension MV3 Boilerplate
+
+This project is a **Chrome Extension Manifest V3** built with React 19, TypeScript, Webpack 5, and Tailwind CSS 4.
+
+## Quick Reference
+
+**Project Type:** Chrome Extension (MV3)
+**Key Tech:** React 19 · TypeScript · Webpack 5 · Tailwind CSS 4 · Shadow DOM
+**Build:** `npm start` (watch) · `npm run build` (prod) · `npm run zip` (webstore)
+
+## Architecture
+
+### Entry Points (Independent Bundles)
+
+- **popup** — `src/popup/popup.tsx` — Action button popup UI
+- **options** — `src/options/options.tsx` — Settings page
+- **sidePanel** — `src/sidePanel/sidePanel.tsx` — Side panel UI (MV3 feature)
+- **background** — `src/background/background.ts` — Service worker (MV3)
+- **contentScript** — `src/contentScript/contentScript.ts` — Injects into web pages
+- **main** — `src/contentScript/main.tsx` — React component in Shadow DOM
+
+### Key Design Decisions
+
+1. **Shadow DOM Isolation** — Content script React components render in Shadow DOM to avoid CSS/JS conflicts with host page
+2. **Chunking Strategy** — contentScript, background, and main bundles are isolated; popup/options/sidePanel share common code
+3. **Manifest V3** — Service worker (no background page), tabs + sidePanel permissions, `<all_urls>` content script matching
+
+### Build Output
+
+`dist/` contains: `popup.html`, `options.html`, `sidePanel.html`, `popup.js`, `options.js`, `sidePanel.js`, `background.js`, `contentScript.js`, `main.js`, extracted stylesheets, `manifest.json`
+
+## When to Reference `.agents/skills/`
+
+### 🔴 Chrome Extension Development
+
+**Reference:** `.agents/skills/chrome-extensions/SKILL.md`
+
+Consult this whenever working on:
+- Manifest changes (permissions, icons, side panel, service worker config)
+- Chrome API usage (tabs, sidePanel, messaging, content scripts)
+- Service worker logic or background tasks
+- Publishing to Chrome Web Store
+- Extension-specific bugs or CSP issues
+
+**Do NOT consult** for: refactoring existing logic, variable renaming, state management fixes
+
+### 🔵 UI/Frontend Code
+
+**Reference:** `.agents/skills/modern-web-guidance/SKILL.md`
+
+Consult this whenever working on:
+- Creating/modifying UI layouts in popup, options, or sidePanel
+- CSS changes, Tailwind utilities, or styling issues
+- Accessibility (forms, ARIA, keyboard navigation, focus)
+- Performance concerns (LCP, responsive design, animations)
+- Content script React component styling
+
+**Do NOT consult** for: component logic, event handlers, state updates, refactoring non-UI code
+
+## Development Workflow
+
+1. `npm start` — Webpack watch mode, rebuilds on file changes
+2. Open `chrome://extensions/` → enable Developer Mode → Load unpacked → select `dist/`
+3. Make changes; webpack rebuilds automatically
+4. Reload extension in Chrome to test
+
+For production: `npm run build && npm run zip` → upload `build-zip/webstore.zip` to Chrome Web Store
+
+## Project Structure
+
+```
+src/
+├── static/manifest.json      # MV3manifest config
+├── popup/                    # Action popup
+├── options/                  # Settings page
+├── sidePanel/                # Side panel UI
+├── background/               # Service worker
+├── contentScript/            # Content script + Shadow DOM React
+├── Icons.tsx                 # Lucide React icon re-exports
+├── utils.ts                  # Shared utilities
+└── tailwind.css              # Base Tailwind imports
+```
+
+## Important Constraints
+
+1. **No eval/new Function** — Extension CSP blocks code execution. Use sandboxed iframes or Blob URLs if needed.
+2. **Icons must exist** — If manifest references icons, create actual PNG files at correct dimensions (16×16, 48×48, 128×128). Otherwise omit icon fields.
+3. **tab.url needs `tabs` permission** — Without it, `tab.url` silently returns undefined.
+4. **Side panel needs trigger** — Defining `side_panel` in manifest doesn't make it openable; add `chrome.sidePanel.open()` call or `setPanelBehavior()`.
+5. **Content script isolation** — Use Shadow DOM for React components to prevent host page CSS conflicts.
+6. **No shared deps for contentScript/background** — Webpack chunks them separately to keep bundle size small.
+
+## Chrome Web Store Publishing
+
+When ready to publish:
+
+1. Update `manifest.json` version
+2. Run `npm run build && npm run zip`
+3. Reference `.agents/skills/chrome-extensions/SKILL.md` for:
+   - Permission justifications
+   - Privacy policy requirements
+   - Store listing guidelines
+   - Review rejection handling
+
+## Token-Efficient Skill Usage
+
+**Use these rules to avoid unnecessary lookups:**
+
+- **Manifest/API changes** → check `.agents/skills/chrome-extensions/SKILL.md`
+- **UI/CSS/Layout work** → check `.agents/skills/modern-web-guidance/SKILL.md`
+- **Logic fixes, refactoring, state management** → use your knowledge; skip skill lookups
+
+The skill files are detailed references — consult them for uncertain or uncommon patterns, not routine code changes.
