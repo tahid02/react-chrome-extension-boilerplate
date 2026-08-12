@@ -1,0 +1,26 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "chrome-devtools-mcp@latest", "--categoryExtensions", "--loadExtension", "./dist", "--userDataDir", "./.chrome-mcp-profile"],
+      "enabled": true
+    }
+  },
+  "permission": {
+    "chrome-devtools_*": "ask",
+    "chrome-devtools_evaluate_script": "deny",
+    "chrome-devtools_get_network_request": "ask",
+    "chrome-devtools_list_pages": "allow",
+    "chrome-devtools_navigate_page": "allow",
+    "chrome-devtools_list_extensions": "allow",
+    "chrome-devtools_install_extension": "allow",
+    "chrome-devtools_uninstall_extension": "allow",
+    "chrome-devtools_reload_extension": "allow",
+    "chrome-devtools_trigger_extension_action": "allow",
+    "chrome-devtools_performance_start_trace": "allow",
+    "chrome-devtools_performance_stop_trace": "allow",
+    "chrome-devtools_performance_analyze_insight": "allow",
+    "chrome-devtools_lighthouse_audit": "allow"
+  }
+}
