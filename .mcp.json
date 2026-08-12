@@ -6,11 +6,13 @@
       "args": [
         "chrome-devtools-mcp@latest",
         "--categoryExtensions",
-        "--autoConnect"
+        "--autoConnect",
+        "--userDataDir",
+        "./.chrome-mcp-profile",
+        "--loadExtension",
+        "./dist"
       ],
-      "env": {
-        "CHROME_PROFILE_DIR": "extension-testing"
-      }
+      "env": {}
     }
   }
 }

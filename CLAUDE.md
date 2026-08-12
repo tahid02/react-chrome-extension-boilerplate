@@ -182,12 +182,16 @@ DevTools MCP will:
 DevTools MCP access is restricted to a separate Chrome profile to prevent credential/PII exposure:
 
 **Profile Setup:**
-- DevTools MCP is **hardcoded** to use the `extension-testing` profile only (via `.mcp.json`)
-- Create the profile once:
-  ```bash
-  open -a "Google Chrome" --args --user-data-dir="$HOME/Library/Application Support/Google/Chrome/extension-testing"
-  ```
-- Your personal profile with real credentials is **completely isolated** and cannot be accessed by DevTools MCP
+- DevTools MCP is configured in `.mcp.json` with `--userDataDir ./.chrome-mcp-profile` — a project-local Chrome profile, entirely separate from your system Chrome profiles (`.chrome-mcp-profile` is gitignored)
+- `--loadExtension ./dist` auto-loads the built extension into that profile
+- Your personal Chrome profile with real credentials is never touched by DevTools MCP — it's a different `userDataDir` altogether, not just a different named profile within the same Chrome install
+
+**Tool-level guardrails (`.claude/settings.json`):**
+- `evaluate_script` is **denied** — this is the highest-risk tool since it runs arbitrary JS against the loaded page and can read cookies/localStorage/DOM state, regardless of which profile is active
+- `get_network_request` requires **confirmation** — network requests may carry sensitive headers/tokens
+- **Pre-approved without prompting** (matches `kilo.json`'s allow list): `list_pages`, `navigate_page`, `list_extensions`, `install_extension`, `uninstall_extension`, `reload_extension`, `trigger_extension_action`, `performance_start_trace`, `performance_stop_trace`, `performance_analyze_insight`, `lighthouse_audit` — these let testing run end-to-end without per-call approval
+- Everything else (click, fill, type, screenshot, console/network listing, etc.) still prompts for confirmation by default, same as `kilo.json`'s `chrome-devtools_*: ask` fallback
+- This gives full parity with `kilo.json`'s permission model for the same MCP server
 
 **Testing Constraints:**
 - Do NOT log into real accounts (Gmail, bank, work) in the test profile
