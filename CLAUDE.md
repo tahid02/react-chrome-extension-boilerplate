@@ -146,6 +146,33 @@ Invoke skills **only when needed** to avoid unnecessary token cost:
 
 Both skills are reference/documentation lookups — use them when you genuinely need current best practices or API guidance, not for routine code changes.
 
+## Persistent Workflow
+
+Follow this workflow for every task:
+
+1. **Check persistent project context** — Read `AGENTS.md` and `CLAUDE.md` (and any similar instruction files) for coding rules, conventions, commands, and architecture notes. Follow them before making changes.
+
+2. **Load skills selectively** — Inspect the skills available in `.agents/`/`.claude`. Load **only** the skills relevant to the current task (per the "When to Use Skills" section above). Never load the whole skills folder — keep token usage minimal while still following all relevant instructions.
+
+3. **Understand and implement the task** — Inspect the relevant code and existing architecture before changing anything. Make the required changes following project instructions and conventions. Avoid modifications outside the scope of the task.
+
+4. **Run the extension in an isolated Chrome profile** — The DevTools MCP is configured to launch a dedicated isolated profile (see "Security" section below). Load the extension and open the appropriate test page. **If authentication is required and user credentials or an interactive login are needed, STOP and ask the user to perform the login.** Once the user completes the login, continue the task. Preserve the authenticated session (`.chrome-mcp-profile` persists on disk) so the user does **not** have to log in again for every subsequent task.
+
+5. **Verify the result** — Use the verification method appropriate to what changed:
+   - **UI-change task**: take a screenshot AND an accessibility/DOM snapshot; inspect the result.
+   - **Code-related or UX task**: perform the relevant interactions and verify behavior.
+   - Note: the agent model may not be able to view images — prefer a11y snapshots, console checks, and network inspection as primary verification, with screenshots as supplements.
+   - If something is wrong, investigate and fix it yourself, then re-verify.
+
+6. **Final report** — Give a concise report containing:
+   - What was changed
+   - Which relevant instructions/skills were used
+   - How the change was verified
+   - Any issues encountered and how they were fixed
+   - Any remaining limitations or manual steps for the user
+
+The goal is a workflow that is **persistent, efficient, token-conscious, and self-verifying**, while minimizing unnecessary skill/context loading and avoiding repeated authentication.
+
 ## Testing Changes with DevTools MCP
 
 DevTools MCP is configured in `.mcp.json` and available for testing. When making changes:
@@ -186,20 +213,19 @@ DevTools MCP access is restricted to a separate Chrome profile to prevent creden
 - `--loadExtension ./dist` auto-loads the built extension into that profile
 - Your personal Chrome profile with real credentials is never touched by DevTools MCP — it's a different `userDataDir` altogether, not just a different named profile within the same Chrome install
 
-**Tool-level guardrails (`.claude/settings.json`):**
-- `evaluate_script` is **denied** — this is the highest-risk tool since it runs arbitrary JS against the loaded page and can read cookies/localStorage/DOM state, regardless of which profile is active
-- `get_network_request` requires **confirmation** — network requests may carry sensitive headers/tokens
-- **Pre-approved without prompting** (matches `kilo.json`'s allow list): `list_pages`, `navigate_page`, `list_extensions`, `install_extension`, `uninstall_extension`, `reload_extension`, `trigger_extension_action`, `performance_start_trace`, `performance_stop_trace`, `performance_analyze_insight`, `lighthouse_audit` — these let testing run end-to-end without per-call approval
-- Everything else (click, fill, type, screenshot, console/network listing, etc.) still prompts for confirmation by default, same as `kilo.json`'s `chrome-devtools_*: ask` fallback
-- This gives full parity with `kilo.json`'s permission model for the same MCP server
+**Tool-level guardrails (`kilo.json` permission block is the source of truth):**
+- `evaluate_script` and `get_network_request` are currently **allowed** in `kilo.json`. This is only safe because the MCP is attached to the isolated profile (no real credentials/PII present). If the MCP is ever switched back to `--autoConnect` (real Chrome), these must be set back to `deny` — `evaluate_script` runs arbitrary JS against the loaded page and `get_network_request` reads request/response bodies (headers, tokens, cookies).
+- **Pre-approved without prompting**: `list_pages`, `navigate_page`, `list_extensions`, `install_extension`, `uninstall_extension`, `reload_extension`, `trigger_extension_action`, `performance_start_trace`, `performance_stop_trace`, `performance_analyze_insight`, `lighthouse_audit` — these let testing run end-to-end without per-call approval
+- Everything else (click, fill, type, screenshot, snapshot, console/network listing, etc.) falls back to `chrome-devtools_*: ask` — prompts for confirmation per call
 
 **Testing Constraints:**
-- Do NOT log into real accounts (Gmail, bank, work) in the test profile
-- Test only against `localhost` or demo sites with dummy data
-- Do NOT test workflows involving real API keys or credentials
+- Test only against `localhost`, demo sites, or sites the user explicitly authorizes
+- The agent NEVER types or handles credentials — the user always performs logins manually
 - Before any DevTools testing, the extension code is reviewed for safety
 - Subagents do NOT have DevTools MCP access — only the main Claude instance
 
-**If Testing Requires Real Credentials:**
-- Tell me explicitly: "This test requires real credentials, please review [specific feature] manually or via static analysis instead"
-- I will NOT use DevTools MCP in this case
+**If Testing Requires a Real Account Login (e.g. YouTube):**
+- The agent STOPS and asks the user to log in manually in the isolated profile's Chrome window
+- The user types their credentials themselves; the agent waits until the user confirms "done"
+- The login persists in `.chrome-mcp-profile`, so the user logs in once, not per task
+- Note: once logged in, the agent's MCP tools (evaluate_script, get_network_request, network inspection) CAN see the logged-in session's data within the isolated profile only — the real Chrome profile is never touched
