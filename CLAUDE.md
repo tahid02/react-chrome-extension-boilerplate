@@ -176,3 +176,26 @@ DevTools MCP will:
 - Report any failures or unexpected behavior
 
 **Always run `npm start` before testing** — changes rebuild automatically, then test the `dist/` folder.
+
+## Security: DevTools MCP & Isolated Profile
+
+DevTools MCP access is restricted to a separate Chrome profile to prevent credential/PII exposure:
+
+**Profile Setup:**
+- DevTools MCP is **hardcoded** to use the `extension-testing` profile only (via `.mcp.json`)
+- Create the profile once:
+  ```bash
+  open -a "Google Chrome" --args --user-data-dir="$HOME/Library/Application Support/Google/Chrome/extension-testing"
+  ```
+- Your personal profile with real credentials is **completely isolated** and cannot be accessed by DevTools MCP
+
+**Testing Constraints:**
+- Do NOT log into real accounts (Gmail, bank, work) in the test profile
+- Test only against `localhost` or demo sites with dummy data
+- Do NOT test workflows involving real API keys or credentials
+- Before any DevTools testing, the extension code is reviewed for safety
+- Subagents do NOT have DevTools MCP access — only the main Claude instance
+
+**If Testing Requires Real Credentials:**
+- Tell me explicitly: "This test requires real credentials, please review [specific feature] manually or via static analysis instead"
+- I will NOT use DevTools MCP in this case

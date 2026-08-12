@@ -8,7 +8,9 @@
         "--categoryExtensions",
         "--autoConnect"
       ],
-      "env": {}
+      "env": {
+        "CHROME_PROFILE_DIR": "extension-testing"
+      }
     }
   }
 }
