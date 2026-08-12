@@ -111,3 +111,36 @@ When ready to publish:
 - **Logic fixes, refactoring, state management** → use your knowledge; skip skill lookups
 
 The skill files are detailed references — consult them for uncertain or uncommon patterns, not routine code changes.
+
+## Testing with DevTools MCP
+
+The project has `chrome-devtools-mcp` configured in `.mcp.json`. Use it to test changes:
+
+**When to test and how:**
+
+- **UI/CSS changes only** → Take a screenshot
+  ```
+  Run: npm start
+  Prompt: "Take a screenshot of the [popup|options|sidePanel] after my UI changes to see how it looks"
+  ```
+
+- **Logic/functionality changes only** → Test with interactions
+  ```
+  Run: npm start
+  Prompt: "Load the extension and test [specific functionality] by [clicking/filling/navigating], take screenshots at each step"
+  ```
+
+- **Both UI + logic changes** → Do both
+  ```
+  Run: npm start
+  Prompt: "Load the extension, test [functionality], and show me screenshots of the results"
+  ```
+
+**How DevTools MCP works:**
+- Launches a Chrome browser instance
+- Loads the unpacked extension from `dist/`
+- Interacts with the extension (click buttons, fill forms, navigate)
+- Takes screenshots and inspects console/network
+- Reports any errors or unexpected behavior
+
+**Important:** Always run `npm start` or `npm run build` first, then prompt the model to test the built `dist/` folder.

@@ -145,3 +145,34 @@ Invoke skills **only when needed** to avoid unnecessary token cost:
   - **Skip for**: Logic changes, event handler updates, component state fixes, refactoring
 
 Both skills are reference/documentation lookups — use them when you genuinely need current best practices or API guidance, not for routine code changes.
+
+## Testing Changes with DevTools MCP
+
+DevTools MCP is configured in `.mcp.json` and available for testing. When making changes:
+
+**UI/CSS changes only** → Take screenshot(s)
+```
+npm start
+# Then prompt: "Take a screenshot of the [popup|options|sidePanel] to verify my UI changes"
+```
+
+**Logic/functionality changes only** → Test with interactions
+```
+npm start
+# Then prompt: "Load the extension and test [feature]: try [action], then [action], verify [expected result]. Take screenshots at each step."
+```
+
+**Both UI + logic changes** → Do both
+```
+npm start
+# Then prompt: "Load the extension, test [feature] by [actions], and show screenshots of the results"
+```
+
+DevTools MCP will:
+- Launch Chrome
+- Load the unpacked extension from `dist/`
+- Interact with it (click, fill, type, navigate)
+- Take screenshots and check console for errors
+- Report any failures or unexpected behavior
+
+**Always run `npm start` before testing** — changes rebuild automatically, then test the `dist/` folder.
