@@ -152,7 +152,7 @@ Follow this workflow for every task:
 
 1. **Check persistent project context** — Read `AGENTS.md` and `CLAUDE.md` (and any similar instruction files) for coding rules, conventions, commands, and architecture notes. Follow them before making changes.
 
-2. **Load skills selectively** — Inspect the skills available in `.agents/`/`.claude`. Load **only** the skills relevant to the current task (per the "When to Use Skills" section above). Never load the whole skills folder — keep token usage minimal while still following all relevant instructions.
+2. **Load skills selectively** — Inspect the skills available in `.claude/skills`. Load **only** the skills relevant to the current task (per the "When to Use Skills" section above). Never load the whole skills folder — keep token usage minimal while still following all relevant instructions.
 
 3. **Understand and implement the task** — Inspect the relevant code and existing architecture before changing anything. Make the required changes following project instructions and conventions. Avoid modifications outside the scope of the task.
 

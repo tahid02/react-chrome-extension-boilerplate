@@ -7,6 +7,9 @@
       "enabled": true
     }
   },
+  "skills": {
+    "paths": ["./.claude/skills"]
+  },
   "permission": {
     "chrome-devtools_*": "ask",
     "chrome-devtools_evaluate_script": "allow",

@@ -29,11 +29,11 @@ This project is a **Chrome Extension Manifest V3** built with React 19, TypeScri
 
 `dist/` contains: `popup.html`, `options.html`, `sidePanel.html`, `popup.js`, `options.js`, `sidePanel.js`, `background.js`, `contentScript.js`, `main.js`, extracted stylesheets, `manifest.json`
 
-## When to Reference `.agents/skills/`
+## When to Reference `.claude/skills/`
 
 ### 🔴 Chrome Extension Development
 
-**Reference:** `.agents/skills/chrome-extensions/SKILL.md`
+**Reference:** `.claude/skills/chrome-extensions/SKILL.md`
 
 Consult this whenever working on:
 - Manifest changes (permissions, icons, side panel, service worker config)
@@ -46,7 +46,7 @@ Consult this whenever working on:
 
 ### 🔵 UI/Frontend Code
 
-**Reference:** `.agents/skills/modern-web-guidance/SKILL.md`
+**Reference:** `.claude/skills/modern-web-guidance/SKILL.md`
 
 Consult this whenever working on:
 - Creating/modifying UI layouts in popup, options, or sidePanel
@@ -96,7 +96,7 @@ When ready to publish:
 
 1. Update `manifest.json` version
 2. Run `npm run build && npm run zip`
-3. Reference `.agents/skills/chrome-extensions/SKILL.md` for:
+3. Reference `.claude/skills/chrome-extensions/SKILL.md` for:
    - Permission justifications
    - Privacy policy requirements
    - Store listing guidelines
@@ -106,8 +106,8 @@ When ready to publish:
 
 **Use these rules to avoid unnecessary lookups:**
 
-- **Manifest/API changes** → check `.agents/skills/chrome-extensions/SKILL.md`
-- **UI/CSS/Layout work** → check `.agents/skills/modern-web-guidance/SKILL.md`
+- **Manifest/API changes** → check `.claude/skills/chrome-extensions/SKILL.md`
+- **UI/CSS/Layout work** → check `.claude/skills/modern-web-guidance/SKILL.md`
 - **Logic fixes, refactoring, state management** → use your knowledge; skip skill lookups
 
 The skill files are detailed references — consult them for uncertain or uncommon patterns, not routine code changes.
