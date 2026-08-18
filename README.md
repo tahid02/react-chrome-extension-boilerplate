@@ -82,22 +82,35 @@ The `chrome-devtools-mcp` server lets the agent drive a real Chrome instance: lo
 
 Both launch an **isolated Chrome profile** (`.chrome-mcp-profile`, gitignored) with `--loadExtension ./dist`, so your personal Chrome profile and credentials are never touched.
 
-### ⚠️ Manual steps in Chrome (required)
+- If you want to use DevTools in a logged-in website, then you have to use a real Chrome profile. Because , chrome will not allow to signup in an isolated profile. ( We recommend to use an unimportant profile to run devtool. And to avoid conflict, only open that profile while devtool is running. You can use other browser/chrome canary for regular using atm )
 
-Open Chrome, navigate to `chrome://inspect/#remote-debugging` and select **Allow remote debugging for this browser instance**.
+    Change the ***args*** property in `.mcp.json`  to 
 
-### Login flows
+        ``` 
+        "args": [
+            "chrome-devtools-mcp@latest",
+            "--categoryExtensions",
+            "--autoConnect"
+        ],
+    
 
-- **No auth needed** → agent tests directly
-- **Auth needed (e.g. YouTube)** → the agent opens the site in the isolated Chrome window and **stops**; you type your credentials manually in that window, then tell the agent "done"
-- The session persists in `.chrome-mcp-profile`, so you log in **once**, not per task
-- Note: once logged in, the agent's tools can see that isolated session's data(e.g. network, cookie ) — so , use secondary/unimportant account for authentication. for more security, deny/ask the evaluate_javascript and network access in the @kilo.json and @.claude/settings.json
+    And change the ***command*** property to: 
+    ```
+    "command": ["npx", "chrome-devtools-mcp@latest", "--categoryExtensions", "--autoConnect"],
+
 
 ### Permissions
 
 - **Claude Code**: `.claude/settings.json` (deny/ask/allow per tool)
 - **Kilo**: `kilo.json` → `permission` (broad `chrome-devtools_*: ask`, with high-risk tools explicitly denied and safe testing tools pre-approved)
 - Adjust these to match your comfort level — e.g. keep `evaluate_script` / `get_network_request` denied if you want zero access to page internals
+
+
+### ⚠️ Manual steps in Chrome (required)
+
+Open Chrome, navigate to `chrome://inspect/#remote-debugging` and select **Allow remote debugging for this browser instance**.
+
+#### After configuring the Devtool , relaunch Claude code/ Kilo code and chrome profile to apply the changes. 
 
 
 
