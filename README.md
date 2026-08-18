@@ -86,7 +86,7 @@ Both launch an **isolated Chrome profile** (`.chrome-mcp-profile`, gitignored) w
 
     Change the ***args*** property in `.mcp.json`  to 
 
-        ``` 
+  
         "args": [
             "chrome-devtools-mcp@latest",
             "--categoryExtensions",
@@ -94,7 +94,7 @@ Both launch an **isolated Chrome profile** (`.chrome-mcp-profile`, gitignored) w
         ],
     
 
-    And change the ***command*** property to: 
+    And in ***kilo.json***, change the ***command*** property to: 
     ```
     "command": ["npx", "chrome-devtools-mcp@latest", "--categoryExtensions", "--autoConnect"],
 
